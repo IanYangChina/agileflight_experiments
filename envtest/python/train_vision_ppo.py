@@ -22,7 +22,8 @@ def configure_random_seed(seed, env=None):
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=0, help="Random seed")
-    parser.add_argument("--lvcoeff", type=float, default=-0.01, help="Env linear velocity penalty coefficient")
+    parser.add_argument("--posxcoeff", type=float, default=0.01, help="Env linear velocity penalty coefficient")
+    parser.add_argument("--lvcoeff", type=float, default=-0.0, help="Env linear velocity penalty coefficient")
     parser.add_argument("--crcoeff", type=float, default=-0.01, help="Env collision reward coefficient")
     parser.add_argument("--avcoeff", type=float, default=-0.0001, help="Env angular velocity penalty coefficient")
     return parser
@@ -31,23 +32,24 @@ def parser():
 def main():
     args = parser().parse_args()
 
-    # load configurations
-    cfg = YAML().load(
-        open(
-            os.environ["FLIGHTMARE_PATH"] + "/flightpy/configs/vision/config.yaml", "r"
-        )
-    )
-
     # save the configuration and other files
     rsg_root = os.path.dirname(os.path.abspath(__file__))
     log_dir = rsg_root + \
               '/crcoeff_' + str(args.crcoeff) + \
-              '_lvcoeff_' + str(args.lvcoeff) + \
+              '_posxcoeff_' + str(args.posxcoeff) + \
               '_avcoeff_' + str(args.avcoeff)
     tb_log_name = 'PPO'
     os.makedirs(log_dir, exist_ok=True)
 
+    # load configurations
+    cfg = YAML().load(
+        open(
+            rsg_root + "/env_config.yaml", "r"
+        )
+    )
+
     # create training environment
+    cfg["rewards"]["pos_x_coeff"] = float(args.posxcoeff)
     cfg["rewards"]["vel_coeff"] = float(args.lvcoeff)
     cfg["rewards"]["collision_coeff"] = float(args.crcoeff)
     cfg["rewards"]["angular_vel_coeff"] = float(args.avcoeff)
@@ -91,12 +93,12 @@ def main():
         clip_range=0.2,
         use_sde=False,  # don't use (gSDE), doesn't work
         env_cfg=cfg,
-        verbose=0,
+        verbose=1,
     )
 
     #
-    print("Current running case: crcoeff %0.2f, lvcoeff %0.2f, avcoeff %0.4f" %
-          (args.crcoeff, args.lvcoeff, args.avcoeff))
+    print("Current running case: crcoeff %0.2f, posxcoeff %0.2f, avcoeff %0.4f" %
+          (args.crcoeff, args.posxcoeff, args.avcoeff))
     print("Start training...")
     model.learn(total_timesteps=int(5 * 1e7), log_interval=(10, 50), tb_log_name=tb_log_name)
 

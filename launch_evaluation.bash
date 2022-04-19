@@ -38,7 +38,8 @@ do
 
   python3 run_competition.py --ppo_path $2 &
   COMP_PID="$!"
-  sleep 10.0
+  echo "Wait for the RL policy node to be ready, you may need to rerun the script if it loads too slowly."
+  sleep 20.0
 
   cd -
 
