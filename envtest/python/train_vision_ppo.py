@@ -93,7 +93,7 @@ def main():
         clip_range=0.2,
         use_sde=False,  # don't use (gSDE), doesn't work
         env_cfg=cfg,
-        verbose=1,
+        verbose=0,
     )
 
     #
