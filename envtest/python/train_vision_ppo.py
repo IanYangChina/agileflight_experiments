@@ -98,7 +98,7 @@ def main():
     )
 
     #
-    print("Current running case: crcoeff %0.2f, lvcoeff %0.2f, posxcoeff %0.2f, avcoeff %0.4f" %
+    print("Current running case: crcoeff %0.2f, lvcoeff %0.2f, posxcoeff %0.4f, avcoeff %0.5f" %
           (args.crcoeff, args.lvcoeff, args.posxcoeff, args.avcoeff))
     print("Start training...")
     model.learn(total_timesteps=int(5 * 1e7), log_interval=(10, 50), tb_log_name=tb_log_name)
