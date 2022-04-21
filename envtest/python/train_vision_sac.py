@@ -43,7 +43,8 @@ def main():
         )
     )
 
-    cfg["simulation"]["num_envs"] = 2
+    cfg["simulation"]["num_envs"] = 10
+    cfg["simulation"]["num_threads"] = 2
     cfg["rewards"]["pos_x_coeff"] = 0.0
     cfg["rewards"]["vel_coeff"] = -0.01
     cfg["rewards"]["collision_coeff"] = 0.0
@@ -88,9 +89,9 @@ def main():
             train_freq=(1, "step"),
             use_sde=False,  # don't use (gSDE), doesn't work
             env_cfg=cfg,
-            verbose=2,
+            verbose=1,
         )
-        model.learn(total_timesteps=int(5 * 1e6), log_interval=(10, 50))
+        model.learn(total_timesteps=int(5 * 1e5), log_interval=(10, 5000))
     else:
         os.system(os.environ["FLIGHTMARE_PATH"] + "/flightrender/RPG_Flightmare.x86_64 &")
         #
