@@ -45,9 +45,9 @@ def main():
 
     cfg["simulation"]["num_envs"] = 100
     cfg["simulation"]["num_threads"] = 3
-    cfg["rewards"]["pos_x_coeff"] = -0.001
+    cfg["rewards"]["pos_x_coeff"] = -0.005
     cfg["rewards"]["vel_coeff"] = 0.0
-    cfg["rewards"]["collision_coeff"] = -0.01
+    cfg["rewards"]["collision_coeff"] = -0.5
     cfg["rewards"]["angular_vel_coeff"] = 0.0
     cfg["rewards"]["survive_rew"] = 0.03
     # create training environment
@@ -92,7 +92,7 @@ def main():
             env_cfg=cfg,
             verbose=1,
         )
-        model.learn(total_timesteps=int(5 * 1e6), log_interval=(50, 10000))
+        model.learn(total_timesteps=int(5 * 1e7), log_interval=(50, 10000))
     else:
         os.system(os.environ["FLIGHTMARE_PATH"] + "/flightrender/RPG_Flightmare.x86_64 &")
         #
@@ -114,4 +114,7 @@ def main():
 
 
 if __name__ == "__main__":
+    start = time.time()
     main()
+    passed_time = ((time.time() - start) / 60) / 60
+    print("Process running time: %f hours" % passed_time)
