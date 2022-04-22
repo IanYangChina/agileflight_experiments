@@ -35,10 +35,16 @@ def parser():
 def main():
     args = parser().parse_args()
 
+    # save the configuration and other files
+    rsg_root = os.path.dirname(os.path.abspath(__file__))
+    log_dir = rsg_root + '/' + args.logdir
+    tb_log_name = 'PPO'
+    os.makedirs(log_dir, exist_ok=True)
+
     # load configurations
     cfg = YAML().load(
         open(
-            os.environ["FLIGHTMARE_PATH"] + "/flightpy/configs/vision/config.yaml", "r"
+            rsg_root + "/env_config.yaml", "r"
         )
     )
 
@@ -49,12 +55,6 @@ def main():
     eval_env = wrapper.FlightEnvVec(
         VisionEnv_v1(dump(cfg, Dumper=RoundTripDumper), False)
     )
-
-    # save the configuration and other files
-    rsg_root = os.path.dirname(os.path.abspath(__file__))
-    log_dir = rsg_root + '/' + args.logdir
-    tb_log_name = 'PPO'
-    os.makedirs(log_dir, exist_ok=True)
 
     #
     os.system(os.environ["FLIGHTMARE_PATH"] + "/flightrender/RPG_Flightmare.x86_64 &")
