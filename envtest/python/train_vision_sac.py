@@ -45,7 +45,7 @@ def main():
 
     cfg["simulation"]["num_envs"] = 1
     cfg["simulation"]["num_threads"] = 2
-    cfg["rewards"]["pos_x_coeff"] = 0.001
+    cfg["rewards"]["pos_x_coeff"] = -0.001
     cfg["rewards"]["vel_coeff"] = 0.0
     cfg["rewards"]["collision_coeff"] = -0.01
     cfg["rewards"]["angular_vel_coeff"] = 0.0
