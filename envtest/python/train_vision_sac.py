@@ -43,8 +43,8 @@ def main():
         )
     )
 
-    cfg["simulation"]["num_envs"] = 1
-    cfg["simulation"]["num_threads"] = 2
+    cfg["simulation"]["num_envs"] = 100
+    cfg["simulation"]["num_threads"] = 5
     cfg["rewards"]["pos_x_coeff"] = -0.001
     cfg["rewards"]["vel_coeff"] = 0.0
     cfg["rewards"]["collision_coeff"] = -0.01
@@ -80,9 +80,9 @@ def main():
             env=train_env,
             eval_env=eval_env,
             learning_rate=3e-4,
-            tau=0.01,
+            tau=0.005,
             learning_starts=1000,
-            gradient_steps=1,
+            gradient_steps=100,
             gamma=0.99,
             ent_coef="auto",
             batch_size=256,
@@ -92,7 +92,7 @@ def main():
             env_cfg=cfg,
             verbose=1,
         )
-        model.learn(total_timesteps=int(9 * 1e5), log_interval=(20, 10000))
+        model.learn(total_timesteps=int(1 * 1e6), log_interval=(20, 1000))
     else:
         os.system(os.environ["FLIGHTMARE_PATH"] + "/flightrender/RPG_Flightmare.x86_64 &")
         #
