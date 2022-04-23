@@ -9,7 +9,8 @@ environment:
 rewards:
   pos_x_coeff: -0.001
   vel_coeff: 0.0
-  collision_coeff: -0.01
+  collision_coeff: 0.0
+  collision_terminal_coeff: 1.0
   angular_vel_coeff: 0.0
   survive_rew: 0.03
   names:

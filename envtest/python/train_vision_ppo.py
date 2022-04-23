@@ -22,10 +22,11 @@ def configure_random_seed(seed, env=None):
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=0, help="Random seed")
-    parser.add_argument("--crcoeff", type=float, default=-0.01, help="Env collision reward coefficient")
-    parser.add_argument("--lvcoeff", type=float, default=-0.01, help="Env linear velocity penalty coefficient")
+    parser.add_argument("--collision_terminal_coeff", type=float, default=1.0, help="Env collision terminal reward coefficient")
+    parser.add_argument("--crcoeff", type=float, default=0.0, help="Env collision reward coefficient")
+    parser.add_argument("--lvcoeff", type=float, default=0.0, help="Env linear velocity penalty coefficient")
     parser.add_argument("--posxcoeff", type=float, default=0.01, help="Env linear velocity penalty coefficient")
-    parser.add_argument("--avcoeff", type=float, default=-0.0001, help="Env angular velocity penalty coefficient")
+    parser.add_argument("--avcoeff", type=float, default=0.0, help="Env angular velocity penalty coefficient")
     return parser
 
 
@@ -35,10 +36,8 @@ def main():
     # save the configuration and other files
     rsg_root = os.path.dirname(os.path.abspath(__file__))
     log_dir = rsg_root + \
-              '/crcoeff_' + str(args.crcoeff) + \
-              '_lvcoeff_' + str(args.lvcoeff) + \
-              '_posxcoeff_' + str(args.posxcoeff) + \
-              '_avcoeff_' + str(args.avcoeff)
+              '/collision_terminal_coeff_' + str(args.crcoeff) + \
+              '_posxcoeff_' + str(args.posxcoeff)
     tb_log_name = 'PPO'
     os.makedirs(log_dir, exist_ok=True)
 
@@ -50,10 +49,11 @@ def main():
     )
 
     # create training environment
+    cfg["rewards"]["collision_terminal_coeff"] = float(args.collision_terminal_coeff)
     cfg["rewards"]["pos_x_coeff"] = float(args.posxcoeff)
-    cfg["rewards"]["vel_coeff"] = float(args.lvcoeff)
-    cfg["rewards"]["collision_coeff"] = float(args.crcoeff)
-    cfg["rewards"]["angular_vel_coeff"] = float(args.avcoeff)
+    cfg["rewards"]["vel_coeff"] = 0.0
+    cfg["rewards"]["collision_coeff"] = 0.0
+    cfg["rewards"]["angular_vel_coeff"] = 0.0
     cfg["simulation"]["num_threads"] = 5
     train_env = VisionEnv_v1(dump(cfg, Dumper=RoundTripDumper), False)
     train_env = wrapper.FlightEnvVec(train_env)
@@ -98,8 +98,8 @@ def main():
     )
 
     #
-    print("Current running case: crcoeff %0.2f, lvcoeff %0.2f, posxcoeff %0.4f, avcoeff %0.5f" %
-          (args.crcoeff, args.lvcoeff, args.posxcoeff, args.avcoeff))
+    print("Current running case: collision_terminal_coeff %0.3f, posxcoeff %0.4f" %
+          (args.collision_terminal_coeff, args.posxcoeff))
     print("Start training...")
     model.learn(total_timesteps=int(5 * 1e7), log_interval=(10, 50), tb_log_name=tb_log_name)
 
