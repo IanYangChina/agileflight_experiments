@@ -36,7 +36,7 @@ def main():
     # save the configuration and other files
     rsg_root = os.path.dirname(os.path.abspath(__file__))
     log_dir = rsg_root + \
-              '/collision_terminal_coeff_' + str(args.crcoeff) + \
+              '/collision_terminal_coeff_' + str(args.collision_terminal_coeff) + \
               '_posxcoeff_' + str(args.posxcoeff)
     tb_log_name = 'PPO'
     os.makedirs(log_dir, exist_ok=True)
