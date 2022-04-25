@@ -50,9 +50,9 @@ def rl_example(state, obstacles, rl_policy=None):
     return command
 
 def load_rl_policy(policy_path):
-    policy_dir = policy_path  + "/Policy/iter_00500.pth" 
-    rms_dir = policy_path + "/RMS/iter_00500.npz" 
-    cfg_dir =  policy_path + "/config.yaml"
+    policy_dir = policy_path  + "/Policy/iter_02000.pth"
+    rms_dir = policy_path + "/RMS/iter_02000.npz"
+    cfg_dir = policy_path + "/config.yaml"
 
     # action 
     env_cfg = YAML().load(open(cfg_dir, "r"))

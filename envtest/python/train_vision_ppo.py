@@ -22,7 +22,8 @@ def configure_random_seed(seed, env=None):
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=0, help="Random seed")
-    parser.add_argument("--collision_terminal_coeff", type=float, default=1.0, help="Env collision terminal reward coefficient")
+    parser.add_argument("--collision_terminal_coeff", type=float, default=0.01,
+                        help="Env collision terminal reward coefficient")
     parser.add_argument("--crcoeff", type=float, default=0.0, help="Env collision reward coefficient")
     parser.add_argument("--lvcoeff", type=float, default=0.0, help="Env linear velocity penalty coefficient")
     parser.add_argument("--posxcoeff", type=float, default=0.01, help="Env linear velocity penalty coefficient")
@@ -54,7 +55,8 @@ def main():
     cfg["rewards"]["vel_coeff"] = 0.0
     cfg["rewards"]["collision_coeff"] = 0.0
     cfg["rewards"]["angular_vel_coeff"] = 0.0
-    cfg["simulation"]["num_threads"] = 5
+    cfg["rewards"]["survive_rew"] = 0.0
+    cfg["simulation"]["num_threads"] = 10
     train_env = VisionEnv_v1(dump(cfg, Dumper=RoundTripDumper), False)
     train_env = wrapper.FlightEnvVec(train_env)
 
