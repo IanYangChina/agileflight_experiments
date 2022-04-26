@@ -22,8 +22,8 @@ def configure_random_seed(seed, env=None):
 def parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=0, help="Random seed")
-    parser.add_argument("--collision_terminal_coeff", type=float, default=0.01,
-                        help="Env collision terminal reward coefficient")
+    parser.add_argument("--level", type=str, default="medium", help="Task level: easy, medium, hard")
+    parser.add_argument("--collision_terminal_coeff", type=float, default=0.01, help="Env collision terminal reward coefficient")
     parser.add_argument("--crcoeff", type=float, default=0.0, help="Env collision reward coefficient")
     parser.add_argument("--lvcoeff", type=float, default=0.0, help="Env linear velocity penalty coefficient")
     parser.add_argument("--posxcoeff", type=float, default=0.01, help="Env linear velocity penalty coefficient")
@@ -36,8 +36,9 @@ def main():
 
     # save the configuration and other files
     rsg_root = os.path.dirname(os.path.abspath(__file__))
-    log_dir = rsg_root + \
-              '/collision_terminal_coeff_' + str(args.collision_terminal_coeff) + \
+    log_dir = rsg_root + '/' + args.level + '_'\
+              'collision_terminal_coeff_' + str(args.collision_terminal_coeff) + \
+              '_crcoeff_' + str(args.crcoeff) + \
               '_posxcoeff_' + str(args.posxcoeff)
     tb_log_name = 'PPO'
     os.makedirs(log_dir, exist_ok=True)
@@ -50,13 +51,14 @@ def main():
     )
 
     # create training environment
+    cfg["environment"]["level"] = args.level
     cfg["rewards"]["collision_terminal_coeff"] = float(args.collision_terminal_coeff)
     cfg["rewards"]["pos_x_coeff"] = float(args.posxcoeff)
     cfg["rewards"]["vel_coeff"] = 0.0
-    cfg["rewards"]["collision_coeff"] = 0.0
+    cfg["rewards"]["collision_coeff"] = float(args.crcoeff)
     cfg["rewards"]["angular_vel_coeff"] = 0.0
     cfg["rewards"]["survive_rew"] = 0.0
-    cfg["simulation"]["num_threads"] = 10
+    cfg["simulation"]["num_threads"] = 6
     train_env = VisionEnv_v1(dump(cfg, Dumper=RoundTripDumper), False)
     train_env = wrapper.FlightEnvVec(train_env)
 
@@ -96,12 +98,12 @@ def main():
         clip_range=0.2,
         use_sde=False,  # don't use (gSDE), doesn't work
         env_cfg=cfg,
-        verbose=0,
+        verbose=1,
     )
 
     #
-    print("Current running case: collision_terminal_coeff %0.3f, posxcoeff %0.4f" %
-          (args.collision_terminal_coeff, args.posxcoeff))
+    print("Current running case: collision_terminal_coeff %0.2f, crcoeff %0.2f, posxcoeff %0.2f" %
+          (args.collision_terminal_coeff, args.crcoeff, args.posxcoeff))
     print("Start training...")
     model.learn(total_timesteps=int(5 * 1e7), log_interval=(10, 50), tb_log_name=tb_log_name)
 
