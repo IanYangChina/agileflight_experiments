@@ -58,7 +58,7 @@ def main():
     cfg["rewards"]["collision_coeff"] = float(args.crcoeff)
     cfg["rewards"]["angular_vel_coeff"] = 0.0
     cfg["rewards"]["survive_rew"] = 0.0
-    cfg["simulation"]["num_threads"] = 5
+    cfg["simulation"]["num_threads"] = 10
     train_env = VisionEnv_v1(dump(cfg, Dumper=RoundTripDumper), False)
     train_env = wrapper.FlightEnvVec(train_env)
 

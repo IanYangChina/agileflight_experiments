@@ -52,6 +52,7 @@ def main():
     if args.render:
         cfg["unity"]["render"] = "yes"
     cfg["simulation"]["num_envs"] = 1
+    cfg["environment"]["level"] = "medium"
     eval_env = wrapper.FlightEnvVec(
         VisionEnv_v1(dump(cfg, Dumper=RoundTripDumper), False)
     )
